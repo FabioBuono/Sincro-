@@ -1,0 +1,100 @@
+# $AUTORE : Buono Fabio <fabio.buono@ymail.com> $
+# $DATA: 22/12/2003 $
+
+CC=	gcc
+STDA=	_GNU_SOURCE
+STDB=	ANSI
+CFLAG=	-Wall -pedantic -O3 -march=$(uname -m) -c
+CFLAGDEBUG=	-g3 -O0 -Wall -pedantic -c
+OBJ1=	server.o libsincro.o
+OBJ2=	client.o libsincro.o
+COM=	make
+COM1=	strip
+VER=	uname -s -r -m -o
+
+.SUFFIXES:	.c.o
+
+.c.o:
+	$(CC)	$(CFLAGDEBUG)	-D$(STDA)	-D$(STDB)	$<
+
+start:
+	$(COM) -s all
+
+all:	wellcome	server	client	clear
+
+strip:
+	$(COM) -s str
+
+str:	wellcome server client	nosymbols	clear
+
+wellcome:
+	clear
+	@echo
+	@echo	+-----------------------------------------------------------------------+
+	@echo
+	@echo	Simple GNU/Linux application
+	@echo
+	@echo
+	@echo	_NOME_APPLICAZIONE : SYNCRO
+	@echo	_AUTORE : Buono Fabio 
+	@echo	_TARGET MAKE DISPONIBILI : all, strip, clear, clobber, install, unistall
+	@echo
+	@echo -n	Compilato in $(CC) versione .
+	$(CC) -dumpversion
+	@echo -n	su .
+	$(VER)
+	@echo -n	con: .
+	$(COM) -v
+	@echo
+	@echo	+-----------------------------------------------------------------------+
+	@echo
+	@echo
+	@echo	.
+	@echo
+
+clear:
+	@rm -f *.o core
+	@test ! -p "SINCRO.pipe" || rm -f SINCRO.pipe
+	@test ! -z "~/.syncrobase.db" || rm -f ~/syncrobase.db
+
+clobber:	clear
+	@test -z "sincro" || rm -f sincro
+	@test -z "sclient" || rm -f sclient
+	@test ! "`ps | grep sincro`" || killall -9 sincro
+	@echo
+	@echo	_SINCRO:
+	@echo
+	@echo	file oggetto, core e pipe rimossi...
+	@echo	binari rimossi...
+	@echo	eventuale copia di sincro residente rimossa.
+	@echo
+
+install:
+	@echo
+	@echo	install...
+	@echo
+	@cp sclient /usr/local/bin && echo client installato in /usr/local/bin/
+	@cp sincro /usr/sbin && echo server installato in /usr/sbin/
+	@echo
+
+uninstall:
+	@echo
+	@echo	uninstall:....
+	@echo
+	@test -z /usr/local/bin/sclient || (rm -f /usr/local/bin/sclient && echo /usr/local/bin/client... rimosso)
+	@test -z /usr/sbin/sincro || (rm -f /usr/sbin/sincro && echo /usr/sbin/sincro... rimosso)
+	@echo
+
+
+nosymbols:
+	strip sclient
+	strip sincro
+
+
+server: $(OBJ1)
+	$(CC)	$(OBJ1) -lgdbm -o sincro
+
+client:	$(OBJ2)
+	$(CC)	$(OBJ2)	-lgdbm -o sclient
+
+# Fine Makefile
