@@ -103,6 +103,17 @@ listen ()
 
 }
 /*****************************************************************************************/
+static void
+Pmenu()
+{
+      printf("\n\nBenvenuti in Sincro.\n\n");
+      printf("1. Sincronizzazione semplice.\n");
+      printf("2. Sincronizzazione regolare.\n");
+      printf("3. Terminazione Sincronizzazione regolare. \n");
+      printf("4. Stampa menu \n");
+      printf("5. Esci.\n\n");
+}
+/*****************************************************************************************/
 int
 main (int argc, char **argv)
 {
@@ -116,15 +127,9 @@ main (int argc, char **argv)
   if (!ispipe ("SINCRO.pipe"))
       TRACE(("\n Errore: gestore non in esecuzione..."));
 
-  listen ();
-
-      printf("\n\nBenvenuti in Sincro.\n\n");
-      printf("1. Sincronizzazione semplice.\n");
-      printf("2. Sincronizzazione regolare.\n");
-      printf("3. Terminazione Sincronizzazione regolare. \n");
-      printf("4. Stampa menu \n");
-      printf("5. Esci.\n\n");
-
+  listen (); 
+  Pmenu();
+	  
    do 
      {
       printf ("> ");
@@ -148,11 +153,7 @@ main (int argc, char **argv)
 	  break;
 	case 4:
 	  {
-	    printf("\n1. Sincronizzazione semplice \n");
-            printf("2. Sincronizzazine regolare \n");
-            printf("3. Terminazione di sincronizzazione \n");
-            printf("4. Stampa men� \n");
-            printf("5. Esci \n\n");
+	  Pmenu();
 	  }
 	  break;
        case 5: 
